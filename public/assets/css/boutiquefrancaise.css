@@ -1,0 +1,33 @@
+body{
+    position: relative;
+
+}
+.navbar-item-custom, .navbar-item-custom a {
+    color : #FFFFFF;
+}
+.footer-custom{
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    background-color: #dfeaff;
+    padding-top: 25px;
+}
+.product-item{
+    text-transform: uppercase;
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+.product-item .product-subtitle{
+    font-size: 14px;
+    display: block;
+    margin-bottom: 10px;
+
+}
+.product-item .product-price{
+    font-size: 14px;
+    font-weight: bold;
+}
+.product-container{
+    margin-bottom: 155px ;
+    margin-left: 50px;
+}
