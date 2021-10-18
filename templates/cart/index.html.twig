@@ -6,6 +6,7 @@
     <h1>Mon panier</h1>
     retrouvez l'esemble des produits que vous avez ajouté à votre panier
     <hr>
+    {% if  cart|length > 0  %}
     <table class="table table-striped">
         <thead>
         <tr>
@@ -15,7 +16,7 @@
             <th scope="col">Quantité</th>
             <th scope="col">Prix</th>
             <th scope="col">Total</th>
-
+            <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
@@ -32,7 +33,12 @@
             <td>x{{ product.quantity}}</td>
             <td>{{ (product.product.price  / 100)|number_format(2,',','.')  }}€</td>
             <td>{{  ((product.product.price * product.quantity ) / 100)|number_format(2,',','.') }}€</td>
-        </tr>
+            <td>
+                <a href="{{ path("delete_to_cart", {"id" : product.product.id}) }}">
+                    <img src="{{ asset('assets/img/trash-can.png') }}" height="30px" alt="supprimer mon produit">
+                </a>
+            </td>
+             </tr>
             {% set total = total + (product.product.price * product.quantity)  %}
         {% endfor %}
         </tbody>
@@ -43,4 +49,8 @@
     <a href="" class="btn btn-success btn-block">Valider mon panier</a>
 
 </div>
+        {% else %}
+            <hr>
+            <p><b>Votre panier est vide</b></p>
+    {% endif %}
 {% endblock %}
