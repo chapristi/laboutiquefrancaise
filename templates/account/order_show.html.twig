@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ma Commandes | La boutique Francaise {% endblock %}
+
+{% block content %}
+    <h1>Ma Commandes</h1>
+    c'est dans cette espace que vous allez puvoir gerer toutes vos commandes
+    <a href="{{ path('account_order') }}">Retour</a>
+    <hr>
+    Commande passée le :  {{ order.createdAt|date('d/m/Y') }}<br>
+    Réference de ma commande : <strong>{{ order.reference}}</strong><br>
+    Transporteur choisi  : {{ order.carierName }}<br>
+
+
+    <table class="table mt-4">
+        <thead>
+        <tr>
+            <th scope="col">Produit</th>
+            <th scope="col">quantité</th>
+            <th scope="col">Prix Unitaire</th>
+            <th scope="col">total</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for product in order.orderDetails %}
+        <tr>
+            <td>{{ product.product }}</td>
+            <td>{{ product.qauntity }}x</td>
+            <td>{{ (product.price / 100)|number_format(2,",",".") }}€</td>
+            <td>{{ (product.total / 100)|number_format(2,",",".") }}€</td>
+            <td></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="text-right">
+        <strong>Sous Total : {{ (order.getTotal / 100)|number_format(2,",",".") }}€</strong><br>
+        <strong>Livraison :  {{ (order.carierPrice / 100)|number_format(2,",",".") }}€</strong><br>
+        <strong>Total {{ ((order.carierPrice +  order.getTotal) / 100)|number_format(2,',','.') }}€</strong>
+    </div>
+
+{% endblock %}

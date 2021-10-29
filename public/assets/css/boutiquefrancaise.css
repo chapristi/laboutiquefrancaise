@@ -31,3 +31,8 @@ body{
     margin-bottom: 155px ;
     margin-left: 50px;
 }
+.block-small
+{
+    max-width: 550px;
+    margin: 0 auto;
+}

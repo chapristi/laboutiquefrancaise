@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Erreur de Paiement  - La  Boutique Francaise{% endblock %}
+
+{% block content %}
+    <h2>Comfirmation de commande</h2>
+    <p>Bonjour <strong>{{ infos_commande.user.firstname }} {{ infos_commande.user.lastname }}</strong></p><br>
+    il semblerait que votre paiment ets echoué pour votre commande <strong>n°{{ infos_commande.reference }}</strong><br>
+    Une confirmation vient de vous etre envoyé par email à l'adresse <strong>{{ infos_commande.user.email}}</strong><br>
+    <hr>
+    <a class="btn btn-dark btn-block" href="{{ path('order') }}">Reessayer le paiement</a>
+
+{% endblock %}

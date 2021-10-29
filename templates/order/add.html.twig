@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+{% block javascript  %}
+    <script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+{% endblock %}
+{% block title %}Paiement de ma commande | La boutique Francaise{% endblock %}
+
+{% block content %}
+    <h2>Mon recapitulatif</h2>
+    <p>Verifier vos informations avant de payer votre commande</p>
+    <div class="row">
+        <div class="col-md6">
+            <strong>Mon adresse de livraison:</strong><br>
+            <div class="form-check mt-4">
+                {{ delivery|raw }}
+            </div>
+
+            <hr>
+
+            <strong>
+                Mon transporteur :
+            </strong>
+            <hr>
+            <div class="form-check">
+                {{ carrier.name }}<br>
+                {{ carrier.description }}<br>
+                {{ (carrier.price / 100) |number_format(2,',','.')  }}
+            </div>
+
+        </div>
+
+        <div class="col-md-7">
+            <b>ma commande </b>
+            {% set total = null %}
+            {% for product in cart %}
+                <div class="row">
+                    <div class="col-2 my-auto"><img height="75px" src="/uploads/{{product.product.illustration}}" alt="{{ product.product.name }}"></div>
+                    <div class="col-8">
+                        {{ product.product.name }}
+                        <small>{{ product.product.subtitle }}</small>
+                    </div>
+                    <div class="col-2 my-auto">
+                        <small>
+                        x{{ product.quantity }}
+                        </small>
+                    </div>
+                    <div class="col-2 my-auto">
+                        {{ (product.product.price * product.quantity / 100)|number_format(2,',','.')  }}€
+                    </div>
+
+                </div>
+                {% set total = total + (product.product.price * product.quantity) %}
+            {% endfor %}
+            <hr>
+            <strong> Sous-Total : {{ (total  / 100)|number_format(2,',','.')  }} € </strong>
+            <strong>Livraison : {{ (carrier.price / 100)|number_format(2,',','.')  }} € </strong>
+            <strong>Total : {{ (carrier.price + (total / 100))|number_format(2,',','.')  }} €</strong>
+            <a id="checkout-button" class="btn btn-success btn-block">Payer {{ ((carrier.price / 100) + (total / 100))|number_format(2,',','.')  }} €</a>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block script %}
+<!-- l'api a besoin que l'on fetch sur une autre route les choses que l'user va acheter donc on va fecth cette page -->
+    <script>
+
+        var stripe = Stripe("pk_test_51JooZkDfZJsKn0QygoHsaoiL0RLGKrqDdqO5pjjY41hfu1PjY133N4iT9EkxjBtA960Gh2PPx40tk8ppqhPMRy3r00GwJuAfeK")
+        var checkoutButton = document.getElementById("checkout-button");
+        checkoutButton.addEventListener("click", function () {
+
+            fetch("/commande/create-session/{{ reference }}", {
+                method: "POST",
+                'Content-Type': 'application/json charset=utf-8',
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (session) {
+                    if (session.error == 'order'){
+                        window.location.replace('{{ path('order') }}');
+                    }else {
+                        return stripe.redirectToCheckout({ sessionId: session.id });
+                    }
+                })
+                .then(function (result) {
+                    // If redirectToCheckout fails due to a browser or network
+                    // error, you should display the localized error message to your
+                    // customer using error.message.
+                    if (result.error) {
+                        alert(result.error.message);
+                    }
+                })
+                .catch(function (error) {
+                    console.error("Error:", error);
+                });
+        });
+
+    </script>
+{% endblock %}
